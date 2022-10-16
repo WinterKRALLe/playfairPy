@@ -4,7 +4,7 @@ from textwrap import wrap
 import numpy as np
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5 import uic
+from PyQt5 import uic, QtWidgets, QtCore
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("gui.ui")
 
@@ -29,7 +29,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
         text = self.lowerAndPunctuation(text)
         text = self.encoding(text)
         text = text.replace(" ", "")
-        text = text.replace("i", "y")
+        text = text.replace("y", "i")
+        if len(text) % 2 != 0:
+            if text[len(text)-1] == "x":
+                text += "w"
+            else:
+                text += "x"
         return text
 
 
@@ -92,6 +97,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         ST = wrap(ST, 5)
         ST = " ".join(ST)
+        self.displayData(keyMatrix)
         self.outputZasifrovat.setText(ST)
 
 
@@ -101,6 +107,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         klic = self.checkDuplicates(klic)
         keyMatrix = self.storeStringInMatrix(klic)
         text = self.inputDesifrovat.text()
+        text = self.normalizeText(text)
         text = "".join(text)
         text = [text[i:i + 2] for i in range(0, len(text), 2)]
         output = ""
@@ -120,6 +127,19 @@ class MyApp(QMainWindow, Ui_MainWindow):
             
         self.outputDesifrovat.setText(output)
 
+
+    def displayData(self, keyMatrix):
+        numcols = len(keyMatrix[0])
+        numrows = len(keyMatrix)
+        self.matrix.setColumnCount(numcols)
+        self.matrix.setRowCount(numrows);
+        self.matrix.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.matrix.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        for row in range(numrows):
+            for column in range(numcols):
+                item = QtWidgets.QTableWidgetItem(keyMatrix[row][column])
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.matrix.setItem(row, column, item)
 
 
     def __init__(self):
