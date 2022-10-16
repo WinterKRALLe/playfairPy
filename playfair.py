@@ -30,11 +30,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
         text = self.encoding(text)
         text = text.replace(" ", "")
         text = text.replace("y", "i")
-        if len(text) % 2 != 0:
-            if text[len(text)-1] == "x":
-                text += "w"
-            else:
-                text += "x"
+        for i in text:
+            if i.isdigit():
+                text = text.replace(i, "")
         return text
 
 
@@ -62,38 +60,45 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return MyApp.matrix
 
 
-    def findPosition(self, matrix,letter):
-        x=y=0
-        for i in range(5):
-            for j in range(5):
-                if matrix[i][j]==letter.lower():
-                    x=i
-                    y=j
+    def findPosition(self, matrix, letter):
+        x = 0
+        y = 0
+        for i in range(len(MyApp.matrix)):
+            for j in range(len(MyApp.matrix[i])):
+                if matrix[i][j] == letter.lower():
+                    x = i
+                    y = j
         return x, y
 
 
+
     def zasifruj(self):
-        klic = self.klic.text()
         OT = self.inputZasifrovat.text()
-        ST = ""
         OT = self.normalizeText(OT)
+        if len(OT) % 2 != 0:
+            if OT[len(OT)-1] == "w":
+                OT += "x"
+            else:
+                OT += "w"
+        ST = ""
         ot = [OT[i:i + 2] for i in range(0, len(OT), 2)]
+        klic = self.klic.text()
         klic = self.normalizeText(klic)
         klic = self.checkDuplicates(klic)
         keyMatrix = self.storeStringInMatrix(klic)
         
         for m in ot:
-            m1, n1 = self.findPosition(keyMatrix,m[0])
-            m2, n2 = self.findPosition(keyMatrix,m[1])
+            try:
+                m1, n1 = self.findPosition(keyMatrix,m[0])
+                m2, n2 = self.findPosition(keyMatrix,m[1])
+            except:
+                print("Nepodařilo se načíst znaky")
             if m1 == m2:
-                ST += keyMatrix[m1][(n1+1)%5]
-                ST += keyMatrix[m1][(n2+1)%5]
+                ST += keyMatrix[m1][(n1+1)%5] + keyMatrix[m1][(n2+1)%5]
             elif n1==n2:
-                ST += keyMatrix[(m1+1)%5][n1]
-                ST += keyMatrix[(m2+1)%5][n2]
+                ST += keyMatrix[(m1+1)%5][n1] + keyMatrix[(m2+1)%5][n2]
             elif m1 != m2 and n1 != n2:
-                ST += keyMatrix[m1][n2]
-                ST += keyMatrix[m2][n1]
+                ST += keyMatrix[m1][n2] + keyMatrix[m2][n1]
 
         ST = wrap(ST, 5)
         ST = " ".join(ST)
@@ -108,7 +113,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
         keyMatrix = self.storeStringInMatrix(klic)
         text = self.inputDesifrovat.text()
         text = self.normalizeText(text)
-        text = "".join(text)
+        if len(text) % 2 != 0:
+            if text[len(text)-1] == "w":
+                text += "x"
+            else:
+                text += "w"
         text = [text[i:i + 2] for i in range(0, len(text), 2)]
         output = ""
        
