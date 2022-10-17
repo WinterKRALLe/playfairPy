@@ -164,7 +164,7 @@
       <x>30</x>
       <y>60</y>
       <width>271</width>
-      <height>181</height>
+      <height>221</height>
      </rect>
     </property>
     <property name="title">
@@ -191,6 +191,35 @@
      </property>
      <property name="text">
       <string>Zadejte klíč:</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="cesky">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>108</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>česky</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="english">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>108</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>english</string>
      </property>
     </widget>
    </widget>
